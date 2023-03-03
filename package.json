@@ -1,6 +1,10 @@
 {
   "name": "render-p5js",
   "version": "1.0.0",
+  "scripts": {
+    "start": "ts-node ./src/index.ts",
+    "build": "tsc"
+  },
   "main": "index.js",
   "author": " ",
   "license": "MIT",

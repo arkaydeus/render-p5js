@@ -1,6 +1,6 @@
 import p5 from 'node-p5'
 
-function sketch (p: any) {
+export const sketch = (p: any, exportImage: (imageData: string) => void) => {
   p.setup = () => {
     let canvas = p.createCanvas(200, 200)
     setTimeout(() => {
@@ -8,6 +8,9 @@ function sketch (p: any) {
         console.log(`saved the canvas as ${filename}`)
         p5
       })
+      const imageData = canvas.canvas.toDataURL()
+      // console.log('imageData', imageData)
+      exportImage(imageData)
     }, 100)
     p.noLoop()
   }
@@ -17,4 +20,4 @@ function sketch (p: any) {
   }
 }
 
-let p5Instance = p5.createSketch(sketch)
+// let p5Instance = p5.createSketch(sketch)
