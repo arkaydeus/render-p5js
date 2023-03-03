@@ -1,30 +1,28 @@
-import p5 from 'node-p5'
-
-let tokenData = {
-  tokenId: '2831',
-  hashes: ['0xb5b54ea7d262bf7349c4329a43dc56b8959b41e585e3dafc63b1c0e4bd28483e']
-}
-
-export const sketch = (p: any, exportImage: (imageData: string) => void) => {
+export const sketch = (
+  p: any,
+  exportImage: (imageData: string) => void,
+  hashes: string[]
+) => {
   p.setup = () => {
-    const width = 300
-    const height = 200
+    const width = 3000
+    const height = 2000
 
     let canvas = p.createCanvas(width, height)
     p.colorMode(p.HSB, 255)
 
-    let numHashes = tokenData.hashes.length
+    let numHashes = hashes.length
     let hashPairs: string[] = []
     for (let i = 0; i < numHashes; i++) {
       for (let j = 0; j < 32; j++) {
-        hashPairs.push(tokenData.hashes[i].slice(2 + j * 2, 4 + j * 2))
+        hashPairs.push(hashes[i].slice(2 + j * 2, 4 + j * 2))
       }
     }
     p.decPairs = hashPairs.map(x => {
       return parseInt(x, 16)
     })
 
-    p.seed = parseInt(tokenData.hashes[0].slice(0, 16), 16)
+    p.hashes = hashes
+    p.seed = parseInt(hashes[0].slice(0, 16), 16)
 
     p.backgroundIndex = 0
     p.backgroundArray = [
@@ -52,19 +50,14 @@ export const sketch = (p: any, exportImage: (imageData: string) => void) => {
     p.spread = p.decPairs[28] < 3 ? 0.5 : p.map(p.decPairs[28], 0, 255, 5, 50)
 
     setTimeout(() => {
-      p.saveCanvas(canvas, 'squiggle', 'png').then((filename: string) => {
-        console.log(`saved the canvas as ${filename}`)
-      })
-      // const imageData = canvas.canvas.toDataURL()
-      // console.log('imageData', imageData)
-      // exportImage(imageData)
+      const imageData = canvas.canvas.toDataURL('image/png')
+      exportImage(imageData)
     }, 100)
     p.noLoop()
   }
   p.draw = () => {
     p.colorCode = 0
-    //  background(backgroundArray[backgroundIndex]);
-    //  background('transparent');
+
     p.background([0, 0, 0, 0])
     let div = Math.floor(p.map(Math.round(p.decPairs[24]), 0, 230, 3, 20))
     let steps = p.slinky ? 50 : p.fuzzy ? 1000 : 200
@@ -141,7 +134,7 @@ export const sketch = (p: any, exportImage: (imageData: string) => void) => {
         }
         p.colorCode++
       }
-      p.seed = parseInt(tokenData.hashes[0].slice(0, 16), 16)
+      p.seed = parseInt(p.hashes[0].slice(0, 16), 16)
     }
 
     p.loops === true ? (p.index = p.index + p.speed) : (p.index = p.index)
@@ -155,4 +148,4 @@ export const sketch = (p: any, exportImage: (imageData: string) => void) => {
   }
 }
 
-let p5Instance = p5.createSketch(sketch)
+// let p5Instance = p5.createSketch(sketch)
