@@ -3,7 +3,7 @@
     "target": "ESNext",
     "module": "commonjs",
     "rootDir": "./src/",
-    "outDir": "./dist/",
+    "outDir": "./public/",
     "strict": true,
     "moduleResolution": "node",
     "importHelpers": true,
@@ -26,7 +26,7 @@
   ],
   "exclude": [
     "node_modules",
-    "dist",
+    "public",
     "workbench"
   ],
 }
