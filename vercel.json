@@ -5,19 +5,5 @@
             "source": "/(.*)",
             "destination": "/src/index.ts"
         }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "src/index.ts",
-            "methods": [
-                "GET",
-                "POST",
-                "PUT",
-                "PATCH",
-                "OPTIONS",
-                "DELETE"
-            ]
-        }
     ]
 }
