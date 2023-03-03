@@ -1,6 +1,6 @@
 # render-p5js
 
-P5JS renderer to product transparent Chromie Squiggles from a tokenhash.
+Headless P5JS renderer to product transparent Chromie Squiggles from a tokenhash.
 Note that a tokenhash is not the same as the hash of the mint tx.
 
 Token hashes can be found at 
