@@ -2,7 +2,7 @@
   "name": "render-p5js",
   "version": "1.0.0",
   "scripts": {
-    "start": "ts-node ./src/index.ts",
+    "start": "nodemon src/index.ts",
     "build": "tsc"
   },
   "main": "index.js",
@@ -19,6 +19,7 @@
     "fastify": "^4.14.0",
     "jest": "^29.4.3",
     "node-p5": "^1.0.4",
+    "nodemon": "^2.0.21",
     "phantomjs-prebuilt": "^2.1.16",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",

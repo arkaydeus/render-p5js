@@ -9,6 +9,7 @@ fastify.register(squiggleRoutes)
 
 /**
  * Run the server!
+ *
  */
 const start = async () => {
   try {
