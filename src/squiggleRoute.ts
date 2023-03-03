@@ -10,7 +10,12 @@ export const squiggleRoutes = async (fastify: FastifyInstance, options) => {
   fastify.get<{
     Params: SquiggleRoute
   }>('/:hash', async (request, reply) => {
-    if (!request.params.hash || request.params.hash.length !== 66) {
+    if (!request.params.hash) {
+      reply.code(400).send('Please provide a token hash')
+      return
+    }
+
+    if (request.params.hash.length !== 66) {
       reply.code(400).send('Invalid hash')
       return
     }
