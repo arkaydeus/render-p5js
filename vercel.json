@@ -1,6 +1,5 @@
 {
     "version": 2,
-    "name": "vercel-test-node-app",
     "builds": [
         {
             "src": "index.js",
@@ -10,7 +9,7 @@
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "/index.js"
+            "dest": "/dist/index.js"
         }
     ]
 }
