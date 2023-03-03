@@ -1,5 +1,6 @@
 import Fastify from 'fastify'
 import { squiggleRoutes } from './squiggleRoute'
+
 const fastify = Fastify({
   logger: true
 })
