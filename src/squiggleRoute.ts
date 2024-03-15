@@ -85,7 +85,13 @@ export const squiggleRoutes = async (fastify: FastifyInstance, options) => {
       alpha
     );
 
-    reply.code(200).header("Content-Type", "image/png").send(imageBuffer);
+    reply
+      .code(200)
+      .headers({
+        "Cache-Control": "max-age=0, s-maxage=86400",
+        "Content-Type": "image/png",
+      })
+      .send(imageBuffer);
   });
 
   fastify.get<{
@@ -122,6 +128,12 @@ export const squiggleRoutes = async (fastify: FastifyInstance, options) => {
       alpha
     );
 
-    reply.code(200).header("Content-Type", "image/png").send(imageBuffer);
+    reply
+      .code(200)
+      .headers({
+        "Cache-Control": "max-age=0, s-maxage=86400",
+        "Content-Type": "image/png",
+      })
+      .send(imageBuffer);
   });
 };
