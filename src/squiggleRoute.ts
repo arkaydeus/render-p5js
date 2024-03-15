@@ -88,7 +88,7 @@ export const squiggleRoutes = async (fastify: FastifyInstance, options) => {
     reply
       .code(200)
       .headers({
-        "Cache-Control": "max-age=0, s-maxage=86400",
+        "Cache-Control": "public max-age=86400, s-maxage=86400",
         "Content-Type": "image/png",
       })
       .send(imageBuffer);
@@ -131,7 +131,7 @@ export const squiggleRoutes = async (fastify: FastifyInstance, options) => {
     reply
       .code(200)
       .headers({
-        "Cache-Control": "max-age=0, s-maxage=86400",
+        "Cache-Control": "public max-age=86400, s-maxage=86400",
         "Content-Type": "image/png",
       })
       .send(imageBuffer);
