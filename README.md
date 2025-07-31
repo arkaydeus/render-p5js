@@ -1,34 +1,135 @@
 # render-p5js
 
-Headless P5JS renderer to product transparent Chromie Squiggles from a tokenhash.
-Note that a tokenhash is not the same as the hash of the mint tx.
+Headless p5.js renderer to produce transparent Chromie Squiggles from token hashes.
+Note that a token hash is not the same as the hash of the mint transaction.
 
-Token hashes can be found at 
+## API Endpoints
 
-https://token.artblocks.io/0
+The service provides two main endpoints for generating Chromie Squiggle images:
 
-under the tokenHash key.
+### Hash Endpoint
+```
+GET /hash/:hash
+```
+Generate a squiggle directly from a 66-character token hash.
 
-e.g.
+**Example:**
+```
+GET /hash/0x722899b10c66da3b72fb60a8e71df442ee1c004547ba2227d76bed357469b4ea
+```
 
-"token_hash": "0x722899b10c66da3b72fb60a8e71df442ee1c004547ba2227d76bed357469b4ea"
+### Token ID Endpoint
+```
+GET /id/:id
+```
+Generate a squiggle from a numeric token ID (looks up hash from local database).
 
-## Example use
+**Example:**
+```
+GET /id/0
+GET /id/1234
+```
 
-`GET /0xb5b54ea7d262bf7349c4329a43dc56b8959b41e585e3dafc63b1c0e4bd28483e`
+### Query Parameters
+Both endpoints support optional query parameters:
+- `width` - Image width (default: 600)
+- `height` - Image height (default: 400)
+- `red` - Background red value 0-255 (default: 255)
+- `green` - Background green value 0-255 (default: 255)
+- `blue` - Background blue value 0-255 (default: 255)
+- `alpha` - Background alpha value 0-255 (default: 0)
 
-`GET /0x722899b10c66da3b72fb60a8e71df442ee1c004547ba2227d76bed357469b4ea`
+**Example with parameters:**
+```
+GET /hash/0x722899b10c66da3b72fb60a8e71df442ee1c004547ba2227d76bed357469b4ea?width=800&height=600&red=0&green=0&blue=0&alpha=255
+```
 
-## Deployment - Vercel
+## Token Hash Reference
 
-Can be deployed on Vercel. Please not that target node runtime is 16.0.
-There are issues with 18.0
+Token hashes can be found at https://token.artblocks.io/{tokenId} under the `token_hash` key.
 
-In addition, the following environment variable is required as part
-of the Vercel project setup:
+**Example response:**
+```json
+{
+  "token_hash": "0x722899b10c66da3b72fb60a8e71df442ee1c004547ba2227d76bed357469b4ea"
+}
+```
 
-`LD_LIBRARY_PATH=/var/task/node_modules/canvas/build/Release`
+## Development
 
-## Local deployment
+### Prerequisites
+- Node.js 16+ (Node.js 22 recommended for Docker)
+- pnpm (specified package manager)
 
-`yarn start` will initialise a deployment on localhost, port 8080
+### Local Development
+```bash
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm start
+
+# Build for production
+pnpm build
+
+# Run tests
+pnpm test
+```
+
+The development server will start on `http://localhost:8080` by default.
+
+## Docker Deployment
+
+### Quick Start
+```bash
+# Start with Docker Compose
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop
+docker-compose down
+```
+
+### Manual Docker Build
+```bash
+# Build image
+docker build -t render-p5js .
+
+# Run container
+docker run -d -p 8080:8080 --name render-p5js-app render-p5js
+```
+
+### Environment Variables
+- `PORT` - Server port (default: 8080)
+- `NODE_ENV` - Environment mode (default: production in Docker)
+
+## Deployment Options
+
+### Vercel
+Can be deployed on Vercel with Node.js 16+ runtime.
+
+Required environment variable:
+```
+LD_LIBRARY_PATH=/var/task/node_modules/canvas/build/Release
+```
+
+### Docker Production
+The included Docker configuration uses Node.js 22 Alpine with all required canvas dependencies pre-installed.
+
+## Technical Details
+
+- **Framework**: Fastify web server
+- **Rendering**: node-p5 for headless p5.js rendering
+- **Image Format**: PNG with base64 encoding
+- **Dependencies**: Requires canvas system libraries for image generation
+- **Data Source**: Local `alltokens.json` file for efficient hash lookups
+
+## Architecture
+
+- `src/index.ts` - Main Fastify server
+- `src/squiggleRoute.ts` - API route handlers
+- `src/squiggle.ts` - p5.js sketch implementation
+- `src/artblocks.ts` - Token hash utilities
+- `src/alltokens.json` - Local token hash database

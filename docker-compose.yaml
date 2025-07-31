@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  render-p5js:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: render-p5js-app
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - LD_LIBRARY_PATH=/app/node_modules/canvas/build/Release
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8080/hash/0x722899b10c66da3b72fb60a8e71df442ee1c004547ba2227d76bed357469b4ea?width=100&height=100', (res) => process.exit(res.statusCode === 200 ? 0 : 1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      # Optional: Mount rendered output directory if you want to persist generated images
+      - ./rendered:/app/rendered
+    networks:
+      - render-p5js-network
+
+networks:
+  render-p5js-network:
+    driver: bridge

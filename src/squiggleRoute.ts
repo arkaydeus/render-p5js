@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyRequest } from "fastify";
+import { FastifyInstance, FastifyRequest, FastifyPluginOptions } from "fastify";
 import p5 from "node-p5";
 import { sketch } from "./squiggle";
 import { getArblocksAssets, getTokenHash } from "./artblocks";
@@ -52,7 +52,7 @@ const generateSquiggle = async (
   return imageBuffer;
 };
 
-export const squiggleRoutes = async (fastify: FastifyInstance, options) => {
+export const squiggleRoutes = async (fastify: FastifyInstance, options: FastifyPluginOptions) => {
   fastify.get<{
     Params: SquiggleRouteHash;
   }>("/hash/:hash", async (request, reply) => {
@@ -116,7 +116,12 @@ export const squiggleRoutes = async (fastify: FastifyInstance, options) => {
       alpha = "0",
     } = request.query as SquiggleQueryParams;
 
-    const hash = await getTokenHash(request.params.id);
+    const hash = getTokenHash(request.params.id);
+
+    if (!hash) {
+      reply.code(404).send("Token hash not found");
+      return;
+    }
 
     const imageBuffer = await generateSquiggle(
       hash,

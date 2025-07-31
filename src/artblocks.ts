@@ -1,4 +1,5 @@
 import axios from "axios";
+import alltokens from "./alltokens.json";
 
 export const getArblocksAssets = async (tokenId: string | number) => {
   const url = `https://token.artblocks.io/${tokenId}`;
@@ -8,7 +9,7 @@ export const getArblocksAssets = async (tokenId: string | number) => {
   return response.data;
 };
 
-export const getTokenHash = async (tokenId: string | number) => {
-  const data = await getArblocksAssets(tokenId);
-  return data.token_hash;
+export const getTokenHash = (tokenId: string | number): string | null => {
+  const hash = alltokens.hashes[tokenId.toString()];
+  return hash || null;
 };
