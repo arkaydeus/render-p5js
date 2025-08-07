@@ -1,10 +1,22 @@
+/**
+ * p5 sketch renderer for Squiggle.
+ *
+ * @param p - The p5 instance provided by node-p5
+ * @param exportImage - Callback to receive the generated PNG as a data URL
+ * @param hashes - Array of token hashes used to drive rendering
+ * @param height - Canvas height (stringified number)
+ * @param width - Canvas width (stringified number)
+ * @param background - Background color in RGBA
+ * @param initialIndex - Initial color offset index to start from (defaults to 0)
+ */
 export const sketch = (
   p: any,
   exportImage: (imageData: string) => void,
   hashes: string[],
   height: string,
   width: string,
-  background: [number, number, number, number]
+  background: [number, number, number, number],
+  initialIndex: number = 0
 ) => {
   p.setup = () => {
     let canvas = p.createCanvas(
@@ -34,7 +46,7 @@ export const sketch = (
       255, 225, 200, 175, 150, 125, 100, 75, 50, 25, 0, 25, 50, 75, 100, 125,
       150, 175, 200, 225,
     ];
-    p.index = 0;
+    p.index = initialIndex;
     p.ht;
     p.wt = 2;
     p.speed = 1;

@@ -1,7 +1,7 @@
-import { FastifyInstance, FastifyRequest, FastifyPluginOptions } from "fastify";
+import { FastifyInstance, FastifyPluginOptions } from "fastify";
 import p5 from "node-p5";
+import { getTokenHash } from "./artblocks";
 import { sketch } from "./squiggle";
-import { getArblocksAssets, getTokenHash } from "./artblocks";
 
 interface SquiggleRouteHash {
   hash: string;
@@ -18,8 +18,12 @@ interface SquiggleQueryParams {
   green: string;
   blue: string;
   alpha: string;
+  index?: string;
 }
 
+/**
+ * Generate a Squiggle image buffer from a token hash and render options.
+ */
 const generateSquiggle = async (
   hash: string,
   height: string,
@@ -27,8 +31,9 @@ const generateSquiggle = async (
   red: string,
   green: string,
   blue: string,
-  alpha: string
-) => {
+  alpha: string,
+  index: string
+): Promise<Buffer> => {
   console.log("Height: ", height);
   console.log("Width: ", width);
 
@@ -36,15 +41,19 @@ const generateSquiggle = async (
   const intGreen = parseInt(green);
   const intBlue = parseInt(blue);
   const intAlpha = parseInt(alpha);
+  const intIndex = Number.isNaN(parseInt(index)) ? 0 : parseInt(index);
 
   const imageData: string = await new Promise((resolve) => {
     p5.createSketch((p) =>
-      sketch(p, resolve, [hash], height, width, [
-        intRed,
-        intGreen,
-        intBlue,
-        intAlpha,
-      ])
+      sketch(
+        p,
+        resolve,
+        [hash],
+        height,
+        width,
+        [intRed, intGreen, intBlue, intAlpha],
+        intIndex
+      )
     );
   });
 
@@ -52,7 +61,10 @@ const generateSquiggle = async (
   return imageBuffer;
 };
 
-export const squiggleRoutes = async (fastify: FastifyInstance, options: FastifyPluginOptions) => {
+export const squiggleRoutes = async (
+  fastify: FastifyInstance,
+  options: FastifyPluginOptions
+): Promise<void> => {
   fastify.get<{
     Params: SquiggleRouteHash;
   }>("/hash/:hash", async (request, reply) => {
@@ -73,6 +85,7 @@ export const squiggleRoutes = async (fastify: FastifyInstance, options: FastifyP
       green = "255",
       blue = "255",
       alpha = "0",
+      index = "0",
     } = request.query as SquiggleQueryParams;
 
     const imageBuffer = await generateSquiggle(
@@ -82,7 +95,8 @@ export const squiggleRoutes = async (fastify: FastifyInstance, options: FastifyP
       red,
       green,
       blue,
-      alpha
+      alpha,
+      index
     );
 
     reply
@@ -114,6 +128,7 @@ export const squiggleRoutes = async (fastify: FastifyInstance, options: FastifyP
       green = "255",
       blue = "255",
       alpha = "0",
+      index = "0",
     } = request.query as SquiggleQueryParams;
 
     const hash = getTokenHash(request.params.id);
@@ -130,7 +145,8 @@ export const squiggleRoutes = async (fastify: FastifyInstance, options: FastifyP
       red,
       green,
       blue,
-      alpha
+      alpha,
+      index
     );
 
     reply
